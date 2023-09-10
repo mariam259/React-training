@@ -1,40 +1,55 @@
-import React from "react";
-import Form from "./components/Form";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ShoppingContainer from "./components/ShoppingContainer";
+import ItemDetails from "./components/ItemDetails";
+import Welcome_Screen from "./components/Welcome_Screen";
+import CheckOut from "./components/CheckOut";
+import { total } from "./components/State/Slice/CartSlice.jsx";
+import Form_Signup from "./components/Form_signup";
+import Form_Login from "./components/Form_Login";
 
-function App() {
-  // const adminUser = {
-  //   email: "example@.com",
-  //   password: "12442",
-  // };
-  // const [user, setUser] = useState({ name: "", email: "" });
-  // const [error, setError] = useState("");
-  // const Login = (e) => {
-  //   console.log(e);
-  // };
-  // const Logout = () => {
-  //   console.log("Logout");
-  // };
+const Layout = () => {
+  const isOpenCheckOut = useSelector((state) => state.checkout.isOpen);
   return (
-    // <div>{(user.email != "") ?
-    //   <div className="flex w-full h-screen">
-    //     <div className="w-full flex items-center justify-center lg:w-1/2">
-    //       <Form />
-    //     </div>
-    //     <div className="hidden relative lg:flex h-full w-1/2 items-center justify-center bg-gray-200">
-    //       <div className="w-60 h-60 bg-gradient-to-tr from-violet-500 to-pink-500 rounded-full"></div>
-    //       <div className="w-full h-1/2 absolute bottom-0 bg-white/10 backdrop-blur-lg"></div>
-    //     </div>
-    //   </div>} </div>
-    //   );
-    <div className="flex w-full h-screen">
-      <div className="w-full flex items-center justify-center lg:w-1/2">
-        <Form />
-      </div>
-      <div className="hidden relative lg:flex h-full w-1/2 items-center justify-center bg-gray-200">
-        <div className="w-60 h-60 bg-gradient-to-tr from-violet-500 to-pink-500 rounded-full"></div>
-        <div className="w-full h-1/2 absolute bottom-0 bg-white/10 backdrop-blur-lg"></div>
-      </div>
+    <div>
+      <Navbar />
+      {isOpenCheckOut && <CheckOut />}
+      <Outlet />
     </div>
+  );
+};
+
+const router = createBrowserRouter([
+  //create our tree of components
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <ShoppingContainer />, // parent of our children
+      },
+      { path: "/ItemDetails/:id", element: <ItemDetails /> },
+      { path: "/Form_Signup", element: <Form_Signup /> },
+      { path: "/Form_Login", element: <Form_Login /> },
+      { path: "/Welcome_Screen", element: <Welcome_Screen /> },
+    ],
+  },
+]);
+function App() {
+  const { cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(total());
+  }, [cartItems]);
+  return (
+    <>
+      <div className="font-sans">
+        <RouterProvider router={router}></RouterProvider>
+      </div>
+    </>
   );
 }
 

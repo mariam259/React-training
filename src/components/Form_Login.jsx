@@ -1,6 +1,12 @@
 import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginActions } from "./State/Slice/index_login";
+import { useNavigate } from "react-router-dom";
 
-function Form() {
+function Form_Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -14,19 +20,19 @@ function Form() {
     if (email.length == 0 || password.length == 0) {
       emailRef.current.style.borderColor = "red";
       passwordRef.current.style.borderColor = "red";
-
       setError(true);
     } else {
+      dispatch(loginActions.login());
       console.log(email);
+      navigate("/");
     }
   };
 
-  // async function handleEmail() {}
   return (
     <form>
       <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray">
         <h1 className="text-5xl font-semibold">Welcome Back</h1>
-        <p className="font-medium text-lg text-gray-500 mt-4">
+        <p className="font-medium text-lg text-gray-500 mt-5">
           Welcome back! Please enter your details.
         </p>
         <div className="mt-8">
@@ -42,7 +48,6 @@ function Form() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                // handleSubmit;
               }}
             />
             {error ? (
@@ -65,7 +70,6 @@ function Form() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                // handleSubmit;
               }}
             />
             {error ? (
@@ -77,15 +81,10 @@ function Form() {
             )}
           </div>
 
-          {/* <div className="mt-8 flex justify-between items-center">
-            <button className="font-medium text-base text-violet-500">
-              Forgot password
-            </button>
-          </div> */}
           <div className="mt-8 flex flex-col gap-y-4">
             <button
               onClick={handleSubmit}
-              className="bg-violet-500 text-white text-lg font-bold py-3 rounded-xl active:scale-[.98] hover:scale-[1.01] ease-in-out"
+              className="bg-gray-600 text-white text-lg font-bold py-3 rounded-xl active:scale-[.98] hover:scale-[1.01] ease-in-out"
             >
               Login
             </button>
@@ -96,4 +95,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default Form_Login;
